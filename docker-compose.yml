@@ -1,0 +1,90 @@
+services:
+  # =============================================================================
+  # Caddy - Reverse Proxy & HTTPS Termination
+  # =============================================================================
+  # Muss zuerst starten, da alle anderen Services über Caddy erreichbar sind
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/certs/selfsigned.crt:/etc/caddy/selfsigned.crt:ro
+      - ./caddy/certs/selfsigned.key:/etc/caddy/selfsigned.key:ro
+      - ./caddy/caddy_data:/data
+      - ./caddy/caddy_config:/config
+    healthcheck:
+      test: ["CMD", "caddy", "validate", "--config", "/etc/caddy/Caddyfile"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      - "com.docker.compose.project=smart-haufe"
+      - "service.type=reverse-proxy"
+    networks:
+      - caddy-mqtt
+
+  # =============================================================================
+  # MQTT5 - Eclipse Mosquitto
+  # =============================================================================
+  mqtt5:
+    image: eclipse-mosquitto
+    container_name: mqtt5
+    restart: unless-stopped
+    depends_on:
+      caddy:
+        condition: service_healthy
+    ports:
+      - "1883:1883"  # MQTT port
+      - "9001:9001"  # MQTT WebSocket port
+    volumes:
+      - ./mqtt/config:/mosquitto/config:rw
+      - ./mqtt/data:/mosquitto/data:rw
+      - ./mqtt/log:/mosquitto/log:rw
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1", "-i", "healthcheck", "-W", "3"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      - "com.docker.compose.project=smart-haufe"
+      - "service.type=messaging"
+    networks:
+      - caddy-mqtt
+
+networks:
+  caddy-mqtt:
+    name: caddy-mqtt
+    driver: bridge

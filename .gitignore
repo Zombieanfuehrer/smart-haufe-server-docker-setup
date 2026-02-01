@@ -1,0 +1,200 @@
+# =============================================================================
+# Security - Private Keys, Certificates, Credentials
+# =============================================================================
+
+# Private keys
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Certificates (exclude from version control)
+*.crt
+*.cer
+*.der
+*.csr
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# Password files
+**/pwfile
+**/password.txt
+**/passwords.txt
+*.passwd
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+*.secret
+
+# Backup files that might contain sensitive data
+*.bak
+*.backup
+*.old
+*~
+
+# =============================================================================
+# Docker Runtime Data
+# =============================================================================
+
+# Caddy data
+caddy/caddy_data/**
+caddy/caddy_config/**
+!caddy/caddy_data/.gitkeep
+!caddy/caddy_config/.gitkeep
+
+# Caddy certificates (runtime generated)
+caddy/certs/*.crt
+caddy/certs/*.key
+caddy/certs/*.pem
+# Keep only the config template
+!caddy/certs/openssl.cnf
+!caddy/certs/.gitkeep
+!caddy/certs/README.md
+
+# MQTT data and logs
+mqtt/data/**
+mqtt/log/**
+!mqtt/data/.gitkeep
+!mqtt/log/.gitkeep
+
+# MQTT password file (contains hashed passwords)
+mqtt/config/pwfile
+
+# =============================================================================
+# Docker Specific
+# =============================================================================
+
+# Docker volumes (if created locally)
+volumes/
+**/volumes/
+
+# Docker compose override files (might contain local configs)
+docker-compose.override.yml
+docker-compose.*.local.yml
+
+# =============================================================================
+# Logs and Temporary Files
+# =============================================================================
+
+# Log files
+*.log
+logs/
+**/*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Core dumps
+core
+*.core
+
+# =============================================================================
+# Operating System Files
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# =============================================================================
+# IDE and Editor Files
+# =============================================================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# =============================================================================
+# Development and Testing
+# =============================================================================
+
+# Node modules (if you add Node.js services)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (if you add Python services)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Go (if you add Go services)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+vendor/
+
+# Database files (if running databases)
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# =============================================================================
+# Custom Application Data (examples for future services)
+# =============================================================================
+
+# Redis dumps
+dump.rdb
+appendonly.aof
+
+# PostgreSQL data
+postgres/data/**
+!postgres/data/.gitkeep
+
+# MySQL/MariaDB data
+mysql/data/**
+!mysql/data/.gitkeep
+
+# MongoDB data
+mongo/data/**
+!mongo/data/.gitkeep
